@@ -44,6 +44,7 @@ class MLPRegression(nn.Module):
             return pred
 
 class MLPClassifier(nn.Module):
+    # MLP = multi-layer perceptron.
     def __init__(self, input_size, hidden_size, num_class, with_dropout=False):
         super(MLPClassifier, self).__init__()
 

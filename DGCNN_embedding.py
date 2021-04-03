@@ -25,11 +25,13 @@ class DGCNN(nn.Module):
         self.latent_dim = latent_dim
         self.output_dim = output_dim
         self.num_node_feats = num_node_feats
+        # Edge feats will never be non-zero
         self.num_edge_feats = num_edge_feats
         self.k = k
         self.total_latent_dim = sum(latent_dim)
         conv1d_kws[0] = self.total_latent_dim
 
+        # Transformation matrices for graph convolution
         self.conv_params = nn.ModuleList()
         self.conv_params.append(nn.Linear(num_node_feats + num_edge_feats, latent_dim[0]))
         for i in range(1, len(latent_dim)):
@@ -42,8 +44,6 @@ class DGCNN(nn.Module):
         dense_dim = int((k - 2) / 2 + 1)
         self.dense_dim = (dense_dim - conv1d_kws[1] + 1) * conv1d_channels[1]
 
-        #if num_edge_feats > 0:
-        #    self.w_e2l = nn.Linear(num_edge_feats, num_node_feats)
         if output_dim > 0:
             self.out_params = nn.Linear(self.dense_dim, output_dim)
 

@@ -63,20 +63,20 @@ class GNNGraph(object):
             self.num_edges = 0
             self.edge_pairs = np.array([])
         
-        # see if there are edge features
-        self.edge_features = None
-        if nx.get_edge_attributes(g, 'features'):  
-            # make sure edges have an attribute 'features' (1 * feature_dim numpy array)
-            edge_features = nx.get_edge_attributes(g, 'features')
-            assert(type(edge_features.values()[0]) == np.ndarray) 
-            # need to rearrange edge_features using the e2n edge order
-            edge_features = {(min(x, y), max(x, y)): z for (x, y), z in edge_features.items()}
-            keys = sorted(edge_features)
-            self.edge_features = []
-            for edge in keys:
-                self.edge_features.append(edge_features[edge])
-                self.edge_features.append(edge_features[edge])  # add reversed edges
-            self.edge_features = np.concatenate(self.edge_features, 0)
+        # # see if there are edge features
+        # self.edge_features = None
+        # if nx.get_edge_attributes(g, 'features'):  
+        #     # make sure edges have an attribute 'features' (1 * feature_dim numpy array)
+        #     edge_features = nx.get_edge_attributes(g, 'features')
+        #     assert(type(edge_features.values()[0]) == np.ndarray) 
+        #     # need to rearrange edge_features using the e2n edge order
+        #     edge_features = {(min(x, y), max(x, y)): z for (x, y), z in edge_features.items()}
+        #     keys = sorted(edge_features)
+        #     self.edge_features = []
+        #     for edge in keys:
+        #         self.edge_features.append(edge_features[edge])
+        #         self.edge_features.append(edge_features[edge])  # add reversed edges
+        #     self.edge_features = np.concatenate(self.edge_features, 0)
 
 
 def load_data():
@@ -87,18 +87,22 @@ def load_data():
     feat_dict = {}
 
     with open('data/%s/%s.txt' % (cmd_args.data, cmd_args.data), 'r') as f:
+        # number of graphs
         n_g = int(f.readline().strip())
         for i in range(n_g):
             row = f.readline().strip().split()
+            # number of nodes, and label
             n, l = [int(w) for w in row]
             if not l in label_dict:
                 mapped = len(label_dict)
                 label_dict[l] = mapped
+            # NOT a digraph!    
             g = nx.Graph()
             node_tags = []
             node_features = []
-            n_edges = 0
+
             for j in range(n):
+                # the next n lines become node 0, node 1, ..., node n-1
                 g.add_node(j)
                 row = f.readline().strip().split()
                 tmp = int(row[1]) + 2
@@ -108,18 +112,20 @@ def load_data():
                     attr = None
                 else:
                     row, attr = [int(w) for w in row[:tmp]], np.array([float(w) for w in row[tmp:]])
+                # each unique 'tag' number gets mapped to 0, 1, 2...
                 if not row[0] in feat_dict:
                     mapped = len(feat_dict)
                     feat_dict[row[0]] = mapped
                 node_tags.append(feat_dict[row[0]])
 
                 if attr is not None:
+                    # node_features is 2d array, num_nodes * num_feat_dims
                     node_features.append(attr)
 
-                n_edges += row[1]
                 for k in range(2, len(row)):
                     g.add_edge(j, row[k])
 
+            # Does each node have features associated with it?
             if node_features != []:
                 node_features = np.stack(node_features)
                 node_feature_flag = True
@@ -127,9 +133,10 @@ def load_data():
                 node_features = None
                 node_feature_flag = False
 
-            #assert len(g.edges()) * 2 == n_edges  (some graphs in COLLAB have self-loops, ignored here)
             assert len(g) == n
             g_list.append(GNNGraph(g, l, node_tags, node_features))
+
+            
     for g in g_list:
         g.label = label_dict[g.label]
     cmd_args.num_class = len(label_dict)
