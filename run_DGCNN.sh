@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # input arguments
-DATA="${1-MUTAG}"  # MUTAG, ENZYMES, NCI1, NCI109, DD, PTC, PROTEINS, COLLAB, IMDBBINARY, IMDBMULTI
+DATA="${1-gccversionclf}"  # MUTAG, ENZYMES, NCI1, NCI109, DD, PTC, PROTEINS, COLLAB, IMDBBINARY, IMDBMULTI
 fold=${2-1}  # which fold as testing data
 test_number=${3-0}  # if specified, use the last test_number graphs as test data
 

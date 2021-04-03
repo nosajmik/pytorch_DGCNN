@@ -133,6 +133,8 @@ def load_data():
                 node_features = None
                 node_feature_flag = False
 
+            print(len(g))
+            print(n)            
             assert len(g) == n
             g_list.append(GNNGraph(g, l, node_tags, node_features))
 

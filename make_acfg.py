@@ -181,13 +181,6 @@ def worker(basenames, outfile_suffix, num):
                                 id_of_nbr = reverse_block_map[nbr.block]
                                 adj_lists[adj_list_idx].append(id_of_nbr)
                 
-                # Remove nodes without edges, since they are isolated
-                for i in range(len(block_map) - 1 , -1, -1):
-                    if not adj_lists[i]:
-                        adj_lists.pop(i)
-                        feat_list.pop(i)
-                assert(len(adj_lists) == len(feat_list))
-                
                 if "gcc-8" in bname:
                     label = 1
                 elif "gcc-6" in bname:
