@@ -89,10 +89,12 @@ def load_data():
     with open('data/%s/%s.txt' % (cmd_args.data, cmd_args.data), 'r') as f:
         # number of graphs
         n_g = int(f.readline().strip())
+        num_nodes_list = []
         for i in range(n_g):
             row = f.readline().strip().split()
             # number of nodes, and label
             n, l = [int(w) for w in row]
+            num_nodes_list.append(n)
             if not l in label_dict:
                 mapped = len(label_dict)
                 label_dict[l] = mapped
@@ -138,6 +140,8 @@ def load_data():
             assert len(g) == n
             g_list.append(GNNGraph(g, l, node_tags, node_features))
 
+        print(f"Avg. nodes per graph: {np.mean(num_nodes_list)}")
+        print(f"Median nodes per graph: {np.median(num_nodes_list)}")
             
     for g in g_list:
         g.label = label_dict[g.label]
