@@ -1,6 +1,6 @@
+import torch
 import sys
 import os
-import torch
 import random
 import numpy as np
 from tqdm import tqdm
