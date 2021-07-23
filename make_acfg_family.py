@@ -16,6 +16,7 @@ nosajmik, July 2021
 '''
 
 import sys
+import time
 import os
 import angr
 import gc
@@ -210,6 +211,7 @@ def worker(basenames, outfile_suffix, num):
 
 
 def main():
+    start = time.time()
     if len(sys.argv) != 3:
         print(f"Usage: {sys.argv[0]} directory-of-unique-binaries outfile-suffix")
         exit(1)
@@ -248,6 +250,9 @@ def main():
         file.write(str(num_graphs) + "\n")
     os.system(f"cat dummyfile *-{sys.argv[2]} > {sys.argv[2]}")
     os.system(f"rm dummyfile *-{sys.argv[2]}")
+
+    end = time.time()
+    print(f"Elapsed time in seconds: {round(end - start, 2)}")
 
 
 if __name__ == "__main__":

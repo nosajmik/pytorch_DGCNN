@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import math
+import time
 import pdb
 from DGCNN_embedding import DGCNN
 from mlp_dropout import MLPClassifier, MLPRegression
@@ -189,6 +190,7 @@ def loop_dataset(g_list, classifier, sample_idxes, optimizer=None, bsize=cmd_arg
 
 
 if __name__ == '__main__':
+    start = time.time()
     print(cmd_args)
     random.seed(cmd_args.seed)
     np.random.seed(cmd_args.seed)
@@ -239,3 +241,6 @@ if __name__ == '__main__':
         features, labels = classifier.output_features(test_graphs)
         labels = labels.type('torch.FloatTensor')
         np.savetxt('extracted_features_test.txt', torch.cat([labels.unsqueeze(1), features.cpu()], dim=1).detach().numpy(), '%.4f')
+
+    end = time.time()
+    print(f"Elapsed time in seconds: {round(end - start, 2)}")

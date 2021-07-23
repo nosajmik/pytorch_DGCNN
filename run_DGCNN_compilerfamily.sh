@@ -62,7 +62,7 @@ IMDBMULTI)
   sortpooling_k=0.9
   ;;
 *)
-  num_epochs=500
+  num_epochs=50
   learning_rate=0.00001
   ;;
 esac
